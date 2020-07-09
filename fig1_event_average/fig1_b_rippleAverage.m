@@ -43,12 +43,12 @@ out.def.label  = {'HIPP'};
 out.param.artfctPad     = [-0.25 0.25];     %% padding applied to artifacts
 out.param.stageoi       = [2 3 4];          %% sleep stages of interest, i.e. NREM.
 out.param.minNREMLen    = 3;                %% minimal required length of NREM to be analyzed
-out.param.avgPad        = [-0.5 0.5];       %% temporal padding around minimum of spindle events
+out.param.avgPad        = [-0.5 0.5];       %% temporal padding around minimum of ripple events
 out.param.baseln        = [-0.5 -0.4];      %% interval for baseline correction
 
 out.time = out.param.avgPad(1) : 0.001 : out.param.avgPad(2);   numTime = numel(out.time);  %% time vector
 
-out.dof    = nan(numPat,numCh);             %% degrees of freedom, i.e. numbers of analyzed spindles per patient and channel
+out.dof    = nan(numPat,numCh);             %% degrees of freedom, i.e. numbers of analyzed ripples per patient and channel
 out.indiv  = nan(numPat,numCh,numTime);     %% individual averages per patient
 out.grdavg = nan(2,numCh,numTime);          %% mean and sem across patients
 
