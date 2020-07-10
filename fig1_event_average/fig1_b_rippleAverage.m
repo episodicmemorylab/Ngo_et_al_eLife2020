@@ -23,16 +23,18 @@ end
 
 
 %% directories etc.
-addpath('E:\GitHub\Ngo_et_al_eLife2020\additional_functions')   %% specify path
+addpath('C:\Ngo_et_al_eLife2020\additional_functions')  %% specify path
 
-dirRoot = 'E:\work_uob\sleesio\upload';                         %% specify path
+dirRoot = 'C:\Ngo_et_al_eLife2020';                     %% specify path
 
-svName  = 'rippleAverage';                                      %% filename for saved data
+svName  = 'rippleAverage';                              %% filename for saved data
 
 
 %% fundamental parameters
 numPat  = 14;   %% number of patients
 numCh   = 1;    %% number of channels
+
+fsample = 1000;
 
 
 %% output structure
@@ -61,10 +63,8 @@ scrptSta = tic;
 for iPat = 1 : numPat
     fprintf('analyse patient %d\n', iPat);
     
-            
     %% get useful parameters
     tmplt   = load(fullfile(dirRoot,'EEGs',sprintf('pat%02d_NC_supplement.mat',iPat)));
-    fsample = tmplt.fsample;
     datalen = tmplt.datalen;
     scoring = ismember(tmplt.scoring,out.param.stageoi);
     
@@ -74,8 +74,8 @@ for iPat = 1 : numPat
     %% loop across channels
     for iCh = 1 : numCh
         %% load data
-        inEEG       = load(fullfile(dirRoot,'EEGs',sprintf('pat%02d_%s.mat',iPat,out.def.label{iCh})));  %% EEG
-        inRipple  = load(fullfile(dirRoot,'Ripples',sprintf('pat%02d_%s_ripples.mat',iPat,out.def.label{iCh})));                              %% Spindle events
+        inEEG       = load(fullfile(dirRoot,'EEGs',sprintf('pat%02d_%s.mat',iPat,out.def.label{iCh})));     %% EEG
+        inRipple    = load(fullfile(dirRoot,'Ripples',sprintf('pat%02d_HIPP_ripples.mat',iPat)));           %% ripple events
         
         
         %% filter data
@@ -123,8 +123,8 @@ for iPat = 1 : numPat
                    inRipple.EvtInfo.maxTime' + round(out.param.avgPad(2) * fsample),...
                    ones(inRipple.EvtInfo.numEvt,1) * round(out.param.avgPad(1) * fsample)];
 
-        tfg.trl(tfg.trl(:,1) < 1 | tfg.trl(:,2) > datalen | inRipple.rejects,:) = [];          %% remove trials outside data range
-        tfg.trl(arrayfun(@(x,y) ~all(godfltr(x:y)),tfg.trl(:,1),tfg.trl(:,2)),:) = [];          %% remove trials overlapping with artifacts
+        tfg.trl(tfg.trl(:,1) < 1 | tfg.trl(:,2) > datalen | inRipple.rejects,:) = [];       %% remove trials outside data range
+        tfg.trl(arrayfun(@(x,y) ~all(godfltr(x:y)),tfg.trl(:,1),tfg.trl(:,2)),:) = [];      %% remove trials overlapping with artifacts
 
         rippleTrl = ft_redefinetrial(tfg,inEEG);
         

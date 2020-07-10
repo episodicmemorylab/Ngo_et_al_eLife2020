@@ -24,16 +24,18 @@ end
 
 
 %% directories etc.
-addpath('E:\GitHub\Ngo_et_al_eLife2020\additional_functions')   %% specify path
+addpath('C:\Ngo_et_al_eLife2020\additional_functions')  %% specify path
 
-dirRoot = 'E:\work_uob\sleesio\upload';                         %% specify path
+dirRoot = 'C:\Ngo_et_al_eLife2020';                     %% specify path
 
-svName  = 'spindleAverage';                                     %% filename for saved data
+svName  = 'spindleAverage';                             %% filename for saved data
 
 
 %% fundamental parameters
 numPat  = 14;   %% number of patients
 numCh   = 2;    %% number of channels
+
+fsample = 1000;
 
 
 %% output structure
@@ -62,10 +64,8 @@ scrptSta = tic;
 for iPat = 1 : numPat
     fprintf('analyse patient %d\n', iPat);
     
-            
     %% get useful parameters
     tmplt   = load(fullfile(dirRoot,'EEGs',sprintf('pat%02d_NC_supplement.mat',iPat)));
-    fsample = tmplt.fsample;
     datalen = tmplt.datalen;
     scoring = ismember(tmplt.scoring,out.param.stageoi);
     
@@ -75,8 +75,8 @@ for iPat = 1 : numPat
     %% loop across channels
     for iCh = 1 : numCh
         %% load data
-        inEEG       = load(fullfile(dirRoot,'EEGs',sprintf('pat%02d_%s.mat',iPat,out.def.label{iCh})));  %% EEG
-        inSpindle   = load(fullfile(dirRoot,'Spindles',sprintf('pat%02d_%s_spindles.mat',iPat,out.def.label{iCh})));                              %% Spindle events
+        inEEG       = load(fullfile(dirRoot,'EEGs',sprintf('pat%02d_%s.mat',iPat,out.def.label{iCh})));                 %% EEG
+        inSpindle   = load(fullfile(dirRoot,'Spindles',sprintf('pat%02d_%s_spindles.mat',iPat,out.def.label{iCh})));    %% Spindle events
         
         
         %% filter data
@@ -133,7 +133,7 @@ for iPat = 1 : numPat
         
         
         %% average across trials
-        spiAvg   = ft_timelockanalysis([],spiTrl);
+        spiAvg = ft_timelockanalysis([],spiTrl);
         
         clear spiTrl
 
